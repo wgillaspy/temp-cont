@@ -43,6 +43,9 @@ Hopefully some portion of this project will be useful to you :)
 - Add an additional mosfet for the additional fan.
 - Better isolate the two fan jumpers, provide their own 5v separate from atmega board to reduce noise.
 - Move the mosfet gate pins onto analog output pins.  Right now the heater can only be off or on.
+- Remove the ftdi programmer pads from the bottom of the board.
+- Update the NodeJs application to write to a splunk endpoint.
+
 
 
       

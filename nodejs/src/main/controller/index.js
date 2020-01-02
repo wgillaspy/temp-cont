@@ -1,7 +1,6 @@
 // 1
 const SerialPort = require('serialport');
 const Readline = require('@serialport/parser-readline');
-const axios = require('axios');
 const moment = require('moment');
 
 const port = new SerialPort('/dev/ttyUSB0', {
@@ -37,7 +36,6 @@ const temperatureMap = {
     23: 83
 };
 
-let previousTemp = 0;
 
 const parser = port.pipe(new Readline({delimiter: '\r\n'}));
 
@@ -57,10 +55,6 @@ parser.on('data', function (data) {
             });
         }
 
-        // //console.log(json);
-        // axios.post("http://localhost:3000/api/Readings/", json).then(function (result) {
-        //     console.log(result.data);
-        // });
     } catch (err) {
         console.log("Error:");
         console.log(err)
