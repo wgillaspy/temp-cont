@@ -1,0 +1,14 @@
+{
+  "Image" : "controller:latest",
+  "Name" : "/controller",
+  "Hostname" : "controller",
+  "HostConfig" : {
+    "Devices": [
+      {
+        "PathOnHost": "/dev/ttyUSB0",
+        "PathInContainer": "/dev/ttyUSB0",
+        "CgroupPermissions": "rwm"
+      }
+    ]
+  }
+}

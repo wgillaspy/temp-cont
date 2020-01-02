@@ -1,0 +1,14 @@
+{
+  "Image" : "avrdude-controller:latest",
+  "Name" : "/avrdude-controller",
+  "Hostname" : "avrdude-controller",
+  "HostConfig" : {
+    "Devices": [
+      {
+        "PathOnHost": "/dev/ttyUSB0",
+        "PathInContainer": "/dev/ttyUSB0",
+        "CgroupPermissions": "rwm"
+      }
+    ]
+  }
+}

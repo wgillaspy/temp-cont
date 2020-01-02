@@ -1,0 +1,40 @@
+#################
+## Eclipse
+#################
+
+*.pydevproject
+.project
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+*.class
+local.properties
+.classpath
+.settings/
+.loadpath
+target/
+out/
+src-images/
+src/main/resources/easynode.properties
+src/main/resources/log4j.properties
+easynode.xml
+.idea
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# CDT-specific
+.cproject
+
+# PDT-specific
+.buildpath
+.cache
+
+node_modules
