@@ -1,6 +1,6 @@
 # temp(erature)-cont(roller)
 
-An atemga328 based temperature controller that can be used to incubate animals :lizard: :honeybee: and plants :rose:.
+An atemga328 based temperature controller that can be used to incubate animals :lizard: :honeybee: :hatching_chick: and plants :rose: :cactus:. 
 It uses up to five ds18b20 temperature probes to monitor temperature.
 Heating can be provided through any 5v-12vDC heating source. 
 The board connects to any computer over usb serial and prints the temperature statuses in Json about
@@ -45,6 +45,7 @@ Hopefully some portion of this project will be useful to you :)
 - Move the mosfet gate pins onto analog output pins.  Right now the heater can only be off or on.
 - Remove the ftdi programmer pads from the bottom of the board.
 - Update the NodeJs application to write to a splunk endpoint.
+- Add a jumper for the heater mosfet gate that can be used to drive an external AC mosfet. 
 
 
 
