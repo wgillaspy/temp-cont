@@ -30,7 +30,7 @@ What is interesting, I think, is the way that updates are deployed.
 
 Why the additional complexity with docker?  Mostly to take advantage of an immutable system that is easy to recover.
 If the raspberry pi SD fails (which they infrequently do) I can quickly stand up a new raspberry pi with the docker REST api exposed using a simple ansible script.
-Once the REST api is exposed and the raspberry pi is placed back on the network, the jenkins can deploy both the temperature controller board code (if necessary) and the application that manages the temperature profile.
+Once the REST api is exposed and the raspberry pi is placed back on the network, jenkins can deploy both the temperature controller board code (if necessary) and the application that manages the temperature profile.
 
 Since I don't keep my incubator near my workstation, having deployment pipeline that can update both the firmware and
 secondary applications that control the temperature profile to remote locations is super awesome.  I don't have to lug
