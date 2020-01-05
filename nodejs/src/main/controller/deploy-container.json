@@ -10,6 +10,6 @@
         "CgroupPermissions": "rwm"
       }
     ],
-    "RestartPolicy": { "Name": "always", "MaximumRetryCount": 30 }
+    "RestartPolicy": { "Name": "always" }
   }
 }
