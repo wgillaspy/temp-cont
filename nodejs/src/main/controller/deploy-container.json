@@ -9,6 +9,7 @@
         "PathInContainer": "/dev/ttyUSB0",
         "CgroupPermissions": "rwm"
       }
-    ]
+    ],
+    "RestartPolicy": { "Name": "always", "MaximumRetryCount": 30 }
   }
 }
