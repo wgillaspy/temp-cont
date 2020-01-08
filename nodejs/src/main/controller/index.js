@@ -4,6 +4,9 @@ const Readline = require('@serialport/parser-readline');
 const moment = require('moment');
 const axios = require("axios");
 
+
+console.log("Starting.");
+
 const port = new SerialPort('/dev/ttyUSB0', {
     baudRate: 9600
 });
@@ -49,13 +52,18 @@ parser.on('data', function (data) {
 
         const eventObject = {"event" : json};
 
-        const axioConfig = {
+        const axiosConfig = {
             headers: {
                 "Authorization" : "Splunk " + process.env.SPLUNK_TOKEN
             }
         };
 
-        axios.post(process.env.SPLUNK_URL, eventObject, axioConfig).then(response => {
+        console.log(axiosConfig);
+        console.log(process.env.SPLUNK_URL);
+        console.log(eventObject);
+
+
+        axios.post(process.env.SPLUNK_URL, eventObject, axiosConfig).then(response => {
 
             console.log("<response>");
             console.log(response);
