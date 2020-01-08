@@ -85,9 +85,9 @@
                 <option name="charting.axisTitleY.visibility">visible</option>
                 <option name="charting.axisTitleY2.visibility">visible</option>
                 <option name="charting.chart">radialGauge</option>
-                <option name="charting.chart.rangeValues">[0,100,200]</option>
+                <option name="charting.chart.rangeValues">[0,100,150,200]</option>
                 <option name="charting.chart.style">minimal</option>
-                <option name="charting.gaugeColors">["0x53a051","0xdc4e41"]</option>
+                <option name="charting.gaugeColors">["0xdc4e41","0x53a051","0xdc4e41"]</option>
                 <option name="charting.legend.placement">right</option>
                 <option name="refresh.display">progressbar</option>
             </chart>
@@ -101,6 +101,8 @@
                     <query>index=iot | timechart avg(tgt) as target avg(t0) as probe0 avg(t1) as probe1 avg(avg) as avg_temp</query>
                     <earliest>-24h@h</earliest>
                     <latest>now</latest>
+                    <refresh>2m</refresh>
+                    <refreshType>delay</refreshType>
                 </search>
                 <option name="charting.axisY2.enabled">0</option>
                 <option name="charting.chart">line</option>
@@ -121,6 +123,8 @@
                     <query>index=iot | timechart values(ht) span=1s as on_off</query>
                     <earliest>-60m@m</earliest>
                     <latest>now</latest>
+                    <refresh>2m</refresh>
+                    <refreshType>delay</refreshType>
                 </search>
                 <option name="charting.axisY.maximumNumber">1</option>
                 <option name="charting.axisY.minimumNumber">0</option>
