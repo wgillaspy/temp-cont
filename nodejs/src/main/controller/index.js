@@ -5,8 +5,6 @@ const moment = require('moment');
 const axios = require("axios");
 
 
-console.log("Starting.");
-
 const port = new SerialPort('/dev/ttyUSB0', {
     baudRate: 9600
 });
@@ -58,22 +56,9 @@ parser.on('data', function (data) {
             }
         };
 
-        console.log(axiosConfig);
-        console.log(process.env.SPLUNK_URL);
-        console.log(eventObject);
-
-
         axios.post(process.env.SPLUNK_URL, eventObject, axiosConfig).then(response => {
 
-            console.log("<response>");
-            console.log(response);
-            console.log("</response>");
-
         }).catch(error => {
-
-            console.log("<error>");
-            console.log(error);
-            console.log("</error>");
 
         });
 
