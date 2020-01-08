@@ -136,7 +136,7 @@ pipeline {
                             cd ./nodejs/src/main/controller
     
                             cat deploy-container.json | mo > deploy-container.json.tmp
-                            mv deploy-container.json.tmp > deploy-container.json
+                            mv deploy-container.json.tmp deploy-container.json
     
                             wget https://nodejs.org/dist/v10.16.2/node-v10.16.2-linux-armv7l.tar.xz
     
