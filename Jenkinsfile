@@ -127,26 +127,26 @@ pipeline {
 
                     withCredentials([string(credentialsId: 'SPLUNK_URL', variable: 'SPLUNK_URL'),
                                      string(credentialsId: 'SPLUNK_TOKEN', variable: 'SPLUNK_TOKEN')]) {
+
+
                         sh """
-                           cat deploy-container.json | mo > deploy-container.json.tmp
-                           mv deploy-container.json.tmp > deploy-container.json
-                         """
+                            curl -X POST  -H 'Content-Type: application/json' http://${IOT_IP_AND_DOCKER_PORT}/containers/${CONTAINER_NAME}/stop
+                            curl -X DELETE http://${IOT_IP_AND_DOCKER_PORT}/containers/${CONTAINER_NAME}?v=${IMAGE_TAG}
+    
+                            cd ./nodejs/src/main/controller
+    
+                            cat deploy-container.json | mo > deploy-container.json.tmp
+                            mv deploy-container.json.tmp > deploy-container.json
+    
+                            wget https://nodejs.org/dist/v10.16.2/node-v10.16.2-linux-armv7l.tar.xz
+    
+                            tar -cvf controller.tar package.json package-lock.json index.js node-v10.16.2-linux-armv7l.tar.xz ./Dockerfile
+    
+                            curl -X POST -H  "X-Registry-Auth: ${GITDOCKERCREDENTAILS}" -H 'Content-Type: application/x-tar' --data-binary '@controller.tar' http://${IOT_IP_AND_DOCKER_PORT}/build?t=controller:latest
+                            curl -X POST  -H 'Content-Type: application/json' --data-binary '@deploy-container.json' http://${IOT_IP_AND_DOCKER_PORT}/containers/create?name=${CONTAINER_NAME}
+                            curl -X POST  -H 'Content-Type: application/json' http://${IOT_IP_AND_DOCKER_PORT}/containers/${CONTAINER_NAME}/start
+                        """
                     }
-
-                    sh """
-                        curl -X POST  -H 'Content-Type: application/json' http://${IOT_IP_AND_DOCKER_PORT}/containers/${CONTAINER_NAME}/stop
-                        curl -X DELETE http://${IOT_IP_AND_DOCKER_PORT}/containers/${CONTAINER_NAME}?v=${IMAGE_TAG}
-
-                        cd ./nodejs/src/main/controller
-
-                        wget https://nodejs.org/dist/v10.16.2/node-v10.16.2-linux-armv7l.tar.xz
-
-                        tar -cvf controller.tar package.json package-lock.json index.js node-v10.16.2-linux-armv7l.tar.xz ./Dockerfile
-
-                        curl -X POST -H  "X-Registry-Auth: ${GITDOCKERCREDENTAILS}" -H 'Content-Type: application/x-tar' --data-binary '@controller.tar' http://${IOT_IP_AND_DOCKER_PORT}/build?t=controller:latest
-                        curl -X POST  -H 'Content-Type: application/json' --data-binary '@deploy-container.json' http://${IOT_IP_AND_DOCKER_PORT}/containers/create?name=${CONTAINER_NAME}
-                        curl -X POST  -H 'Content-Type: application/json' http://${IOT_IP_AND_DOCKER_PORT}/containers/${CONTAINER_NAME}/start
-                  """
                 }
             }
         }

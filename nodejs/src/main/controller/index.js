@@ -1,7 +1,8 @@
-// 2
+// 3
 const SerialPort = require('serialport');
 const Readline = require('@serialport/parser-readline');
 const moment = require('moment');
+const axios = require("axios");
 
 const port = new SerialPort('/dev/ttyUSB0', {
     baudRate: 9600
@@ -45,8 +46,33 @@ parser.on('data', function (data) {
         const hour = moment().format("H");
         const json = JSON.parse(data);
         console.log(json);
+
+        const eventObject = {"event" : json};
+
+        const axioConfig = {
+            headers: {
+                "Authorization" : "Splunk " + process.env.SPLUNK_TOKEN
+            }
+        };
+
+        axios.post(process.env.SPLUNK_URL, eventObject, axioConfig).then(response => {
+
+            console.log("<response>");
+            console.log(response);
+            console.log("</response>");
+
+        }).catch(error => {
+
+            console.log("<error>");
+            console.log(error);
+            console.log("</error>");
+
+        });
+
         if (json.tgt != temperatureMap[hour]) {
             console.log("Hour: " + hour + ", " + json.tgt + " != " + temperatureMap[hour]);
+
+
             newTemp.tgt = temperatureMap[hour];
             port.write(JSON.stringify(newTemp), function (error) {
                 if (error) {
