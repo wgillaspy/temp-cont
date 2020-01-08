@@ -125,6 +125,14 @@ pipeline {
             steps {
                 script {
 
+                    withCredentials([string(credentialsId: 'SPLUNK_URL', variable: 'SPLUNK_URL'),
+                                     string(credentialsId: 'SPLUNK_TOKEN', variable: 'SPLUNK_TOKEN')]) {
+                        sh """
+                           cat deploy-container.json | mo > deploy-container.json.tmp
+                           mv deploy-container.json.tmp > deploy-container.json
+                         """
+                    }
+
                     sh """
                         curl -X POST  -H 'Content-Type: application/json' http://${IOT_IP_AND_DOCKER_PORT}/containers/${CONTAINER_NAME}/stop
                         curl -X DELETE http://${IOT_IP_AND_DOCKER_PORT}/containers/${CONTAINER_NAME}?v=${IMAGE_TAG}

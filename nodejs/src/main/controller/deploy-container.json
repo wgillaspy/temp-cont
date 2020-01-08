@@ -2,6 +2,10 @@
   "Image" : "controller:latest",
   "Name" : "/controller",
   "Hostname" : "controller",
+  "Env": [
+    "SPLUNK_URL={{SPLUNK_URL}}",
+    "SPLUNK_TOKEN={{SPLUNK_TOKEN}}"
+  ],
   "HostConfig" : {
     "Devices": [
       {

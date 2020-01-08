@@ -5,7 +5,7 @@
  *  Use this to mimic temperature changes during the day and night for animals, plants, etc.
  *  Compatible with revision 4.2.*
 **/
-#include "ArduinoJson.h"
+#include <ArduinoJson.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <EEPROM.h>
@@ -145,6 +145,8 @@ void setup() {
     pinMode(MOSFET_HEAT, OUTPUT);
     analogWrite(MOSFET_HEAT, 0);
 
+
+    // The fan mosfet should be written high on startup.
     pinMode(MOSFET_FAN, OUTPUT);
     analogWrite(MOSFET_FAN, 255);
 
