@@ -5,7 +5,7 @@ It uses up to five ds18b20 temperature probes to monitor temperature.
 Heating can be provided through any 5v-12vDC heating source. 
 The board connects to any computer over usb serial and prints the temperature statuses in Json about
 every second.
-The board has a default temperature stored in EEPROM or a temperature profile can be driven from a
+A settable default temperature is stored in EEPROM to survive power offs or a temperature profile can be driven from a
 secondary application.
 In this project, I use a [simple nodejs](nodejs/src/main/controller/index.js) application to maintain a temperature profile
 that changes with each hour of the day.
