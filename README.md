@@ -47,7 +47,7 @@ What is interesting, I think, is the way that updates are deployed.
 - The code is pushed to github.
 - The github webhook calls out to Jenkins on the same private network as the temperature controller.
 - The Jenkins instance creates a build container
-- The build container then packages up the arduino code into an avr-dude container and sends it to a raspberry pi that the temperature controller is connected to via usb.
+- The build container then packages up the arduino code into an [avr-dude container](https://github.com/wgillaspy/arm64v8-avrdude) and sends it to a raspberry pi that the temperature controller is connected to via usb.
 - The build container requests that the container start then
 - At container start, the temperature controller code is compiled within the avr-dude container on the remote raspberry pi and then deployed to the temperature controller board.
 
