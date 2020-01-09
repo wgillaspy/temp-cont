@@ -13,7 +13,7 @@ Set the target temperature to 91F and write the value to EEPROM to persist acros
 {"a":"tgt","tgt":91} 
 ```
 
-Set the target to 100F and do not write the value to EEPROM.  The target temperature will revert back to what is stored in EEPROM if powered off and back on.
+Set the target temperature to 100F and **do not** write the value to EEPROM.  The target temperature will revert back to what is stored in EEPROM if powered off and back on.
 ```json
 {"a":"tgt_tmp","tgt":100}
 ``` 
