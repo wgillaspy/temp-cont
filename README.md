@@ -25,7 +25,7 @@ Set the target temperature to 100F and **do not** write the value to EEPROM.  Th
 ``` 
 
 ##### Reading the output
-And every second or so, the board sends a json string so you know the status of your incubator.  t0 and t1 are the two 
+Every second or so, the board sends a json string so you know the status of your incubator.  t0 and t1 are the two 
 temperatures probes (the code allows up to five).  Avg is the temperature used to compare against the tgt value.  ht
 is whether the heater mostfet is on or not.  And fan is the number of pulses received between readings.  If the pulse 
 fall to zero, the heating element will be disabled to prevent overheating.
