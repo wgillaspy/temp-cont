@@ -1,6 +1,6 @@
 # temp(erature)-cont(roller)
 
-An atemga328 based temperature controller that can be used to incubate animals :lizard: :honeybee: :hatching_chick: and plants :rose: :cactus:. 
+An very small atemga328 based temperature controller that can be used to incubate animals :lizard: :honeybee: :hatching_chick: and plants :rose: :cactus:. 
 It uses up to five ds18b20 temperature probes to monitor temperature.
 Heating can be provided through any 5v-12vDC heating source. 
 The board connects to any computer over usb serial and prints the temperature statuses in Json about every second.
