@@ -12,6 +12,8 @@ Right now the temperature can only be set with integers.
  
 Programming of the atmega is done over a mini-usb (ftdi) or via the isp headers.
 
+##### Setting the target temperature
+
 Set the target temperature to 91F and write the value to EEPROM to persist across power offs.
 ```json
 {"a":"tgt","tgt":91} 
@@ -22,6 +24,7 @@ Set the target temperature to 100F and **do not** write the value to EEPROM.  Th
 {"a":"tgt_tmp","tgt":100}
 ``` 
 
+##### Reading the output
 And every second or so, the board sends a json string so you know the status of your incubator.  t0 and t1 are the two 
 temperatures probes (the code allows up to five).  Avg is the temperature used to compare against the tgt value.  ht
 is whether the heater mostfet is on or not.  And fan is the number of pulses received between readings.  If the pulse 
