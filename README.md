@@ -22,12 +22,12 @@ And every second or so, the board sends a json string so you know the status of 
 temperatures probes (the code allows up to five).  Avg is the temperature used to compare against the tgt value.  ht
 is whether the heater mostfet is on or not.  And fan is the number of pulses received between readings.
 ```json
-{ tgt: '81',
-  t0: '80.60',
-  t1: '81.50',
-  avg: '81.05',
-  ht: '0',
-  fan: '126' }
+{ "tgt": "81",
+  "t0": "80.60",
+  "t1": "81.50",
+  "avg": "81.05",
+  "ht": "0",
+  "fan": "126" }
 ``` 
 Top layer of the board, about life size.  
 ![Board Top](./resources/board.png)
