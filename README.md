@@ -1,12 +1,12 @@
 # temp(erature)-cont(roller)
 
-An very small atemga328 based temperature controller that can be used to incubate animals :lizard: :honeybee: :hatching_chick: and plants :rose: :cactus:. 
+An very small atemga328p based temperature controller that can be used to incubate animals :lizard: :honeybee: :hatching_chick: and plants :rose: :cactus:. 
 It uses up to five ds18b20 temperature probes connected into a single audio jack to monitor temperature.
 Heating can be provided through any 5v-12vDC heating source.  I use the 12v rail of a spare computer power supply.
 The board connects to any computer over usb serial and prints the temperature statuses in Json about every second.  The 
 default temperature can be changed while running and is stored in EEPROM to survive power offs.  The target temperature 
 can also be set without writing to EEPROM.  This is useful when using a secondary application to maintain a temperature profile.
-Right now the temperature can only be set with integers.
+Right now the temperature can only be set with integers.  Programming of the atmega is done over a mini-usb (ftdi) or via the isp headers.
 
 Set the target temperature to 91F and write the value to EEPROM to persist across power offs.
 ```json
@@ -32,15 +32,8 @@ is whether the heater mostfet is on or not.  And fan is the number of pulses rec
 Top layer of the board, about life size.  
 ![Board Top](./resources/board.png)
 
-In this project, I use a [simple nodejs](nodejs/src/main/controller/index.js) application to maintain a temperature profile
-that changes with each hour of the day.
-Programming is done over a mini-usb (ftdi) or via isp headers.  
-
-
-
-
-Right now I've got the board hooked up to a raspberry pi running the [nodejs controller](nodejs/src/main/controller) container which
-maintains a temperature profile and sends the output of the board to a personal splunk instance for graphing. 
+The controller board is hooked up to a raspberry pi running the [nodejs controller](nodejs/src/main/controller) container which
+maintains a temperature profile and sends the output of the board to a personal splunk instance for graphing.   
 ![SplunkPanel](./resources/splunk.png)
 
 Honestly, the board isn't all that impressive and neither is the temperature controller code.  Its a basic temperature controller that averages
