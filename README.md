@@ -23,7 +23,7 @@ is above or below the desired target tempature.  It also checks to make sure the
 running.  If the fan isn't turning the heating element will shutdown. 
  
 What is interesting, I think, is the way that updates are deployed.
-![Deploy](./resources/deployment.png)
+
 - Board code is tested locally on the workstation and once confirmed as working then
 - The code is pushed to github.
 - The github webhook calls out to Jenkins on the same private network as the temperature controller.
@@ -31,6 +31,8 @@ What is interesting, I think, is the way that updates are deployed.
 - The build container then packages up the arduino code into an avr-dude container and sends it to a raspberry pi that the temperature controller is connected to via usb.
 - The build container requests that the container start then
 - At container start, the temperature controller code is compiled within the avr-dude container on the remote raspberry pi and then deployed to the temperature controller board.
+
+![Deploy](./resources/deployment.png)
 
 Why the additional complexity with docker?  Mostly to take advantage of an immutable system that is easy to recover.
 If the raspberry pi SD fails (which they infrequently do) I can quickly stand up a new raspberry pi with the docker REST api exposed using a simple ansible script.
