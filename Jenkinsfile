@@ -177,7 +177,7 @@ pipeline {
                         sh """
                             cd ./nodejs/src/main/notifier
 
-                            docker run -t arm64v8/node:alpine -v "$PWD":/usr/src/app -w /usr/src/app npm install
+                            docker run -t arm64v8/node:alpine -v "PWD":/usr/src/app -w /usr/src/app npm install
                             docker build . -t registry:5000/notifier:latest 
                           
                         """
