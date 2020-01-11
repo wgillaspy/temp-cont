@@ -14,7 +14,8 @@ pipeline {
         CONTAINER_NAME = "controller" // The name of of the nodjs application that will read data coming of the controller board.
         APP_INO = "controller.ino"  // The name of the arduino file that will be compiled and written to the atmega.
         INO_CHANGED = "no"
-        NODEJS_CHANGED = "no"
+        NODEJS_CONTROLLER_CHANGED = "no"
+        NODEJS_NOTIFIER_CHANGED = "no"
     }
 
     stages {
@@ -53,8 +54,11 @@ pipeline {
                         if (fileName.contains("arduino")) {
                             INO_CHANGED = "yes"
                         }
-                        if (fileName.contains("nodejs")) {
-                            NODEJS_CHANGED = "yes"
+                        if (fileName.contains("nodejs") && fileName.contains("controller")) {
+                            NODEJS_CONTROLLER_CHANGED = "yes"
+                        }
+                        if (fileName.contains("nodejs") && fileName.contains("notifier")) {
+                            NODEJS_NOTIFIER_CHANGED = "yes"
                         }
                     }
                 }
@@ -116,10 +120,10 @@ pipeline {
         }
 
 
-        stage('Deploy the nodejs applications') {
+        stage('Deploy the nodejs controller application') {
             when {
                 expression {
-                    NODEJS_CHANGED == "yes"
+                    NODEJS_CONTROLLER_CHANGED == "yes"
                 }
             }
             steps {
@@ -145,6 +149,37 @@ pipeline {
                             curl -X POST -H  "X-Registry-Auth: ${GITDOCKERCREDENTAILS}" -H 'Content-Type: application/x-tar' --data-binary '@controller.tar' http://${IOT_IP_AND_DOCKER_PORT}/build?t=controller:latest
                             curl -X POST  -H 'Content-Type: application/json' --data-binary '@deploy-container.json' http://${IOT_IP_AND_DOCKER_PORT}/containers/create?name=${CONTAINER_NAME}
                             curl -X POST  -H 'Content-Type: application/json' http://${IOT_IP_AND_DOCKER_PORT}/containers/${CONTAINER_NAME}/start
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Deploy the nodejs notifier application') {
+            when {
+                expression {
+                    NODEJS_NOTIFIER_CHANGED == "yes"
+                }
+            }
+            steps {
+                script {
+
+                    withCredentials([string(credentialsId: 'TWILIO_SID', variable: 'TWILIO_SID'),
+                                     string(credentialsId: 'TWILIO_AUTH_TOKEN', variable: 'TWILIO_AUTH_TOKEN'),
+                                     string(credentialsId: 'TWILIO_TO', variable: 'TWILIO_TO'),
+                                     string(credentialsId: 'TWILIO_FROM', variable: 'TWILIO_FROM'),
+                                     string(credentialsId: 'SPLUNK_API_HOST', variable: 'SPLUNK_API_HOST'),
+                                     string(credentialsId: 'SPLUNK_API_PORT', variable: 'SPLUNK_API_PORT')]) {
+
+                        // This one is a little different since it's going to the swarm cluster.
+                        // We'll need to build it locally and then push it to the registry.
+                        // Please double check the docker file to make sure you aren't exposing andy secrets.
+                        sh """
+                            cd ./nodejs/src/main/notifier
+
+                            docker run -t arm64v8/node:alpine -V "$PWD":/usr/src/app -w /usr/src/app npm install
+                            docker build . -t registry:5000/notifier:latest 
+                          
                         """
                     }
                 }

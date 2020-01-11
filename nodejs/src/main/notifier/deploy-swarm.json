@@ -1,0 +1,45 @@
+{
+  "Name": "notifier",
+  "TaskTemplate": {
+    "ContainerSpec": {
+      "Image": "registry:5000/notifier:latest",
+      "Mounts": [],
+      "Env": [
+        "TWILIO_SID={{TWILIO_SID}}",
+        "TWILIO_AUTH_TOKEN={{TWILIO_AUTH_TOKEN}}",
+        "TWILIO_TO={{TWILIO_TO}}",
+        "TWILIO_FROM={{TWILIO_FROM}}",
+        "SPLUNK_API_HOST={{SPLUNK_API_HOST}}",
+        "SPLUNK_API_PORT={{SPLUNK_API_PORT}}"
+      ]
+    },
+    "Networks": [
+      {
+        "Target": "swarm-network"
+      }
+    ],
+    "Placement": {
+      "Constraints": [
+      ]
+    },
+    "RestartPolicy": {
+      "Condition": "any",
+      "Delay": 10000000000,
+      "MaxAttempts": 10
+    }
+  },
+  "Mode": {
+    "Replicated": {
+      "Replicas": 1
+    }
+  },
+  "UpdateConfig": {
+    "Delay": 30000000000,
+    "Parallelism": 1,
+    "FailureAction": "pause"
+  },
+  "EndpointSpec": {
+    "Ports": []
+  }
+}
+
