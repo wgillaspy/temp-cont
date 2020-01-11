@@ -173,7 +173,7 @@ pipeline {
 
                         // This one is a little different since it's going to the swarm cluster.
                         // We'll need to build it locally and then push it to the registry.
-                        // Please double check the docker file to make sure you aren't exposing andy secrets.
+                        // Please double check the docker file to make sure you aren't exposing any secrets.
                         sh """
                             cd ./nodejs/src/main/notifier
 
