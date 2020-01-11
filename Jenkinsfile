@@ -176,8 +176,8 @@ pipeline {
                         // Please double check the docker file to make sure you aren't exposing any secrets.
                         sh """
                             cd ./nodejs/src/main/notifier
-
-                            docker run arm64v8/node:alpine -v "$PWD":/usr/src/app -w /usr/src/app npm install
+                            
+                            docker run arm64v8/node:alpine -v "\$PWD":/usr/src/app -w /usr/src/app npm install
                             docker build . -t registry:5000/notifier:latest 
                           
                         """
