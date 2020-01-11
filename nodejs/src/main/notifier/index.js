@@ -98,8 +98,6 @@ const searchSplunk = (service, searchQuery, searchParams) => {
 };
 
 
-const _this = this;
-
 setInterval(function() {
     searchSplunk(service, searchQuery, searchParams).then(splunkResult => {
 
