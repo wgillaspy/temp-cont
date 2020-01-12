@@ -183,8 +183,8 @@ pipeline {
                             docker build . -t ${REGISTRY_IP_AND_PORT}/notifier:latest 
                             docker push ${REGISTRY_IP_AND_PORT}/notifier:latest
 
-                            cat deploy-container.json | mo > deploy-container.json.tmp
-                            mv deploy-container.json.tmp deploy-container.json
+                            cat deploy-swarm.json | mo > deploy-swarm.json.tmp
+                            mv deploy-swarm.json.tmp deploy-swarm.json
 
                             curl -X POST 'Content-Type: application/json' --data-binary '@deploy-swarm.json' http://${SWARM_MANAGER_IP_AND_DOCKER_PORT}/services/create
                         """
