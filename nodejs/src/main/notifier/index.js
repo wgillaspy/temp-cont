@@ -91,7 +91,7 @@ const searchSplunk = (service, searchQuery, searchParams) => {
 
         service.oneshotSearch(searchQuery, searchParams, function (error, result) {
             if (error) {
-                reject(error);
+                reject(JSON.stringify(error.data));
             } else {
                 resolve(result.results);
             }
