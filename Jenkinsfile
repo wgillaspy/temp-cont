@@ -177,6 +177,8 @@ pipeline {
                         sh """
                             cd ./nodejs/src/main/notifier
 
+                            curl -X DELETE -H 'Content-Type: application/json' http://${SWARM_MANAGER_IP_AND_DOCKER_PORT}/services/notifier
+
                             docker run -v "\$PWD":/usr/src/app -w /usr/src/app arm64v8/node:alpine npm --verbose install
                             docker build . -t ${REGISTRY_IP_AND_PORT}/notifier:latest 
                             docker push ${REGISTRY_IP_AND_PORT}/notifier:latest
@@ -184,11 +186,7 @@ pipeline {
                             cat deploy-container.json | mo > deploy-container.json.tmp
                             mv deploy-container.json.tmp deploy-container.json
 
-                            curl -X POST  -H 'Content-Type: application/json' http://${IOT_IP_AND_DOCKER_PORT}/containers/notifier/stop
-                            curl -X DELETE http://${IOT_IP_AND_DOCKER_PORT}/containers/notifier?v=latest
-
-                            curl -X POST  -H 'Content-Type: application/json' --data-binary '@deploy-container.json' http://${IOT_IP_AND_DOCKER_PORT}/containers/create?name=notifier
-                            curl -X POST  -H 'Content-Type: application/json' http://${IOT_IP_AND_DOCKER_PORT}/containers/notifier/start
+                            curl -X POST 'Content-Type: application/json' --data-binary '@deploy-swarm.json' http://${SWARM_MANAGER_IP_AND_DOCKER_PORT}/services/create
                         """
                     }
                 }
