@@ -1,4 +1,4 @@
-// 16
+// 17
 
 const splunkjs = require('splunk-sdk');
 const twilio = require('twilio');
@@ -8,7 +8,7 @@ const debounce = {}; // Place a hash of keys and times here.
 
 const service = new splunkjs.Service({
     username: process.env.SPLUNK_USER,
-    password: process.env.SPLUNK_PASSWORD,
+    password: process.env.SPLUNK_PASSWORD,d
     scheme: 'https',
     host: process.env.SPLUNK_API_HOST,
     port: process.env.SPLUNK_API_PORT,
