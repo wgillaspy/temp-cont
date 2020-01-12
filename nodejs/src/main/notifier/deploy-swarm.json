@@ -2,7 +2,7 @@
   "Name": "notifier",
   "TaskTemplate": {
     "ContainerSpec": {
-      "Image": "registry:5000/notifier:latest",
+      "Image": "{{REGISTRY_IP_AND_PORT}}/notifier:latest",
       "Mounts": [],
       "Env": [
         "TWILIO_SID={{TWILIO_SID}}",
