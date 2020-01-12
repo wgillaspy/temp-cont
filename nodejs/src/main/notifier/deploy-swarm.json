@@ -10,7 +10,9 @@
         "TWILIO_TO={{TWILIO_TO}}",
         "TWILIO_FROM={{TWILIO_FROM}}",
         "SPLUNK_API_HOST={{SPLUNK_API_HOST}}",
-        "SPLUNK_API_PORT={{SPLUNK_API_PORT}}"
+        "SPLUNK_API_PORT={{SPLUNK_API_PORT}}",
+        "SPLUNK_USER={{SPLUNK_USER}}",
+        "SPLUNK_PASSWORD={{SPLUNK_PASSWORD}}"
       ]
     },
     "Networks": [

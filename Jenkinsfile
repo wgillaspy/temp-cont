@@ -169,7 +169,8 @@ pipeline {
                                      string(credentialsId: 'TWILIO_TO', variable: 'TWILIO_TO'),
                                      string(credentialsId: 'TWILIO_FROM', variable: 'TWILIO_FROM'),
                                      string(credentialsId: 'SPLUNK_API_HOST', variable: 'SPLUNK_API_HOST'),
-                                     string(credentialsId: 'SPLUNK_API_PORT', variable: 'SPLUNK_API_PORT')]) {
+                                     string(credentialsId: 'SPLUNK_API_PORT', variable: 'SPLUNK_API_PORT'),
+                                     usernamePassword(credentialsId: 'SPLUNK_USER_AND_PASSWORD', usernameVariable: 'SPLUNK_USER', passwordVariable: 'SPLUNK_PASSWORD')]) {
 
                         // This one is a little different since it's going to the swarm cluster.
                         // We'll need to build it locally and then push it to the registry.
