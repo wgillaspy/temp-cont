@@ -44,7 +44,7 @@ const allowSms = (label) => {
 
 const sendSMS = async (label, message) => {
 
-    if (allowSms) {
+    if (allowSms(label)) {
         const client = new twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
 
         await client.messages.create({
