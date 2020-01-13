@@ -76,7 +76,7 @@ Hopefully some portion of this project will be useful to you :)
 - [x] Move the mosfet gate pins onto analog output pins.  Right now the heater can only be off or on.  
 - [x] Remove the ftdi programmer pads from the bottom of the board.  
 - [x] Update the NodeJs application to write to a splunk endpoint.  
-- [ ] Add a jumper for the heater mosfet gate that can be used to drive an external AC mosfet.   
+- [x] Add a jumper for the heater mosfet gate that can be used to drive an external AC mosfet.   
 
 
 
