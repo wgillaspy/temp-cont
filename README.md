@@ -85,7 +85,7 @@ Hopefully some portion of this project will be useful to you :)
 - [ ] Update the BOM and pad sizes to be consistent across components.
 - [ ] Does 0402 makes sense?  
 - [ ] Retrace the board to reduce overall board size.
-
+- [ ] Figure out compatibility issues with atmega328pb
 
 
       
