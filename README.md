@@ -72,7 +72,7 @@ Hopefully some portion of this project will be useful to you :)
 - [x] Add SMS notifications.
 - [x] Update the NodeJs application to write to a splunk endpoint. 
 
-#### :building_construction Board changes in feature/new-board-layout
+#### :building_construction: Board changes in [feature/new-board-layout](https://github.com/wgillaspy/temp-cont/tree/feature/new-board-layout)
 - [x] Remove the serial display jumper in favor of another 5V fan jumper.  
 - [x] Add an additional mosfet for the additional fan.
 - [x] Better isolate the two fan jumpers, provide their own 5v separate from atmega board to reduce noise.  
