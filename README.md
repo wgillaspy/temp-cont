@@ -80,6 +80,11 @@ Hopefully some portion of this project will be useful to you :)
 - [x] Remove the ftdi programmer pads from the bottom of the board.
 - [x] Add a jumper for the heater mosfet gate that can be used to drive an external AC mosfet. (feature/new-board-layout)
 
+#### Upcoming board changes
+- [ ] Convert the mini usb connector to usb c.
+- [ ] Update the BOM and pad sizes to be consistent across components.
+- [ ] Does 0402 makes sense?  
+- [ ] Retrace the board to reduce overall board size.
 
 
 
