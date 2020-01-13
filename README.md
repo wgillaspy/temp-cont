@@ -26,8 +26,9 @@ Set the target temperature to 100F and **do not** write the value to EEPROM.  Th
 
 ##### Reading the output
 Every second or so, the board sends a json string so you know the status of your incubator.  t0 and t1 are the two 
-temperatures probes (the code allows up to five).  Avg is the probe's temperature averaged together.  It's the temperature
-used to compare against the tgt value.  Ht is whether the heater mostfet is on or not.  And fan is the number of pulses received between readings.  If the pulse fall to zero, the heating element will be disabled to prevent overheating.
+temperatures probes (the code allows up to five).  Avg is the temperature used to compare against the tgt value.  ht
+is whether the heater mostfet is on or not.  And fan is the number of pulses received between readings.  If the pulse 
+fall to zero, the heating element will be disabled to prevent overheating.
 ```json
 { "tgt": "81",
   "t0": "80.60",
@@ -68,24 +69,15 @@ my laptop around just to add a feature or set a default temperature.
 
 Hopefully some portion of this project will be useful to you :)  
 
-#### New Things
-- [x] Add SMS notifications.
-- [x] Update the NodeJs application to write to a splunk endpoint. 
-
-#### :building_construction: Board changes in [feature/new-board-layout](https://github.com/wgillaspy/temp-cont/tree/feature/new-board-layout)
+#### Things that will be done over the next several months.
 - [x] Remove the serial display jumper in favor of another 5V fan jumper.  
-- [x] Add an additional mosfet for the additional fan.
+- [x] Add an additional mosfet for the additional fan.  
 - [x] Better isolate the two fan jumpers, provide their own 5v separate from atmega board to reduce noise.  
-- [x] Move the mosfet gate pins onto analog output pins.  Right now the heater can only be off or on.
-- [x] Remove the ftdi programmer pads from the bottom of the board.
-- [x] Add a jumper for the heater mosfet gate that can be used to drive an external AC mosfet. (feature/new-board-layout)
+- [x] Move the mosfet gate pins onto analog output pins.  Right now the heater can only be off or on.  
+- [x] Remove the ftdi programmer pads from the bottom of the board.  
+- [x] Update the NodeJs application to write to a splunk endpoint.  
+- [x] Add a jumper for the heater mosfet gate that can be used to drive an external AC mosfet.   
 
-#### Upcoming board changes
-- [ ] Convert the mini usb connector to usb c.
-- [ ] Update the BOM and pad sizes to be consistent across components.
-- [ ] Does 0402 makes sense?  
-- [ ] Retrace the board to reduce overall board size.
-- [ ] Figure out compatibility issues with atmega328pb
 
 
       
