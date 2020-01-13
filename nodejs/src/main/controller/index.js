@@ -1,4 +1,3 @@
-// 4
 const SerialPort = require('serialport');
 const Readline = require('@serialport/parser-readline');
 const moment = require('moment');
@@ -25,9 +24,9 @@ const temperatureMap = {
     10: 85,
     11: 86,
     12: 87,
-    13: 90,
-    14: 88,
-    15: 87,
+    13: 89,
+    14: 90,
+    15: 88,
     16: 87,
     17: 86,
     18: 85,
@@ -46,7 +45,7 @@ parser.on('data', function (data) {
     try {
         const hour = moment().format("H");
         const json = JSON.parse(data);
-        console.log(json);
+        //console.log(json);
 
         const eventObject = {"event" : json};
 

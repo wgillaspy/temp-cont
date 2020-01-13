@@ -64,7 +64,7 @@ const alertIfTemperatureRangeExceeded = (avgTemp, tgtTemp) => {
         difference = difference * -1;
     }
 
-    if (difference > 2) {
+    if (difference > 3) {
         sendSMS("TEMP", "The incubator temperature (" +  avgTemp + ") is out of range of the target temperature (" + tgtTemp + ") ");
     }
 
