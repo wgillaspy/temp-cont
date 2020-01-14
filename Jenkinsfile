@@ -187,7 +187,7 @@ pipeline {
                             cat deploy-swarm.json | mo > deploy-swarm.json.tmp
                             mv deploy-swarm.json.tmp deploy-swarm.json
 
-                            curl -X POST 'Content-Type: application/json' --data-binary '@deploy-swarm.json' http://${SWARM_MANAGER_IP_AND_DOCKER_PORT}/services/create
+                            curl -X POST -H 'Content-Type: application/json' --data-binary '@deploy-swarm.json' http://${SWARM_MANAGER_IP_AND_DOCKER_PORT}/services/create
                         """
                     }
                 }
