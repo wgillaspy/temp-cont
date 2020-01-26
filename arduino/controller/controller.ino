@@ -3,33 +3,31 @@
  *  {"a":"tgt","tgt":91}  # Set the temperature and write the value to eeprom to persist across power offs.
  *  {"a":"tgt_tmp","tgt":100} # Set the temperature temporarily.  Value will revert to what is stored in eeprom if powered off.
  *  Use this to mimic temperature changes during the day and night for animals, plants, etc.
- *  Compatible with revision 4.2.*
+ *  Compatible with revision 4.5.*
 **/
 #include <ArduinoJson.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <EEPROM.h>
 
-#define CLK  2
-#define DOUT  3
 #define ONE_WIRE_BUS 4
 
 #define STATUS_LED_1 14  // RED LED
 #define STATUS_LED_2 15  // BLUE LED
 #define STATUS_LED_3 13  // BLUE LED
 
-
-#define MOSFET_HEAT 7
-#define MOSFET_FAN 6
-#define DATE_TIME 10
+#define MOSFET_HEAT 5
+#define MOSFET_FAN_1 6
+#define MOSFET_FAN_2 9
 
 #define TARGET_TEMP_EEPROM_ADDRESS 0
 #define TARGET_TEMP 85 // Target temperature cannot be a decimal at this time.
 #define MAX_TARGET_TEMP 120 // Don't let the temperature be set above this amount.
 
 #define READ_DELAY 200
-#define INTERUPT_PIN 3
-#define WRITEPIN 0
+
+#define INTERRUPT_PIN_FAN_1 2
+#define INTERRUPT_PIN_FAN_2 3
 
 #define DUTY_CYCLE_ON 4
 #define DUTY_CYCLE_OFF 8
@@ -147,13 +145,16 @@ void setup() {
 
 
     // The fan mosfet should be written high on startup.
-    pinMode(MOSFET_FAN, OUTPUT);
-    analogWrite(MOSFET_FAN, 255);
+    pinMode(MOSFET_FAN_1, OUTPUT);
+    analogWrite(MOSFET_FAN_1, 255);
 
-    pinMode(INTERUPT_PIN, INPUT);
-    digitalWrite(INTERUPT_PIN, HIGH);
+    pinMode(MOSFET_FAN_2, OUTPUT);
+    analogWrite(MOSFET_FAN_2, 255);
 
-    attachInterrupt(digitalPinToInterrupt(INTERUPT_PIN), readRpm, RISING);
+    pinMode(INTERRUPT_PIN_FAN_1, INPUT);
+    digitalWrite(INTERRUPT_PIN_FAN_1, HIGH);
+
+    attachInterrupt(digitalPinToInterrupt(INTERRUPT_PIN_FAN_1), readRpm, RISING);
 
     blinkLED(STATUS_LED_1);
     blinkLED(STATUS_LED_2);
@@ -223,6 +224,7 @@ void loop() {
 
       if (mosfetOn_heater) {
         rampDownMosfet(MOSFET_HEAT);
+        rampDownMosfet(MOSFET_FAN_2);
         digitalWrite(STATUS_LED_3, LOW);
         mosfetOn_heater = false;
         mosfetDutyCycleOnCount = 0;
@@ -231,6 +233,7 @@ void loop() {
 
     } else if (average <= persistantTargetTemperature) {
       if (!mosfetOn_heater) {
+        rampUpMosfet(MOSFET_FAN_1);
         rampUpMosfet(MOSFET_HEAT);
         digitalWrite(STATUS_LED_3, HIGH);
         mosfetOn_heater = true;
