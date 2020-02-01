@@ -12,6 +12,11 @@
         "PathOnHost": "/dev/tempController",
         "PathInContainer": "/dev/tempController",
         "CgroupPermissions": "rwm"
+      },
+      {
+        "PathOnHost": "/dev/lightController",
+        "PathInContainer": "/dev/lightController",
+        "CgroupPermissions": "rwm"
       }
     ],
     "RestartPolicy": { "Name": "always" }
