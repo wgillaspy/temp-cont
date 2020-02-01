@@ -1,6 +1,6 @@
 // 2
 const SerialPort = require('serialport');
-const Readline = require('@serialport/temperatureControllerParser-readline');
+const Readline = require('@serialport/parser-readline');
 const moment = require('moment');
 const axios = require("axios");
 
