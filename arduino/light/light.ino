@@ -59,6 +59,8 @@ void loop() {
   blinkLED(STATUS_LED_1);
 
   Serial.println(jsonStringToPrint);
+
+  delay(1000);
 }
 
 void rampUpMosfet(int MOSFET_PIN) {
