@@ -49,17 +49,17 @@ boolean fanIsRunning = false;
 int mosfetValue_heater = 0;
 int mosfetValue_fan = 0;
 
-int persistantTargetTemperature = TARGET_TEMP;
+int persistentTargetTemperature = TARGET_TEMP;
 
 // Each DS18B20 has it's own one wire address.  Visit http://www.hacktronics.com/Tutorials/arduino-1-wire-address-finder.html
 // Make sure you have your 4.7K resistor on data and +5V.
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
-volatile int fanInteruptCount = 0;
+volatile int fanInterruptCount = 0;
 
 void readRpm() {
-  fanInteruptCount++;
+  fanInterruptCount++;
 }
 
 void blinkLED(int PIN) {
@@ -86,7 +86,7 @@ void readJsonAndDoAction(String inputJson) {
     if (action.equals("tgt_tmp")) {
       int newTargetTemperature = doc["tgt"];
       if (newTargetTemperature < MAX_TARGET_TEMP) {
-         persistantTargetTemperature = newTargetTemperature;  
+         persistentTargetTemperature = newTargetTemperature;  
       }
     }
 }
@@ -99,10 +99,10 @@ void setAndReadTargetTemperature(int temperature, boolean overwrite) {
       temperature = MAX_TARGET_TEMP;
     }
     EEPROM.write(TARGET_TEMP_EEPROM_ADDRESS, temperature);
-    persistantTargetTemperature = temperature;
+    persistentTargetTemperature = temperature;
   } else {
     if (storedTargetTemperature < MAX_TARGET_TEMP) { //   Nothing I do needs to be above this temperature.
-      persistantTargetTemperature = storedTargetTemperature;
+      persistentTargetTemperature = storedTargetTemperature;
     }
   }
 }
@@ -118,7 +118,7 @@ void setup() {
      EEPROM.write(TARGET_TEMP_EEPROM_ADDRESS, TARGET_TEMP);
   } else {
     if (storedTargetTemperature < 120) { //   Nothing I do needs to be above this temperature.
-      persistantTargetTemperature = storedTargetTemperature;
+      persistentTargetTemperature = storedTargetTemperature;
     }
   }
   
@@ -180,7 +180,7 @@ String addToJsonString(String json, String add_json) {
 
 void checkFanStatus() {
    // Make sure the fan is running.  If it's not, turn off the heat.
-  if (fanInteruptCount > 8) {
+  if (fanInterruptCount > 8) {
     blinkLED(STATUS_LED_2);
     fanIsRunning = true;
   } else {
@@ -188,7 +188,7 @@ void checkFanStatus() {
     fanIsRunning = false;
   }
  
-  fanInteruptCount = 0;
+  fanInterruptCount = 0;
 }
 
 void loop() {
@@ -202,8 +202,8 @@ void loop() {
   double combinedTemperatures = 0.0;
 
   String jsonStringToPrint = "";
-  String persistantTargetTemperatureString = getJsonPair("tgt", persistantTargetTemperature);
-  jsonStringToPrint = addToJsonString(jsonStringToPrint, persistantTargetTemperatureString);
+  String persistentTargetTemperatureString = getJsonPair("tgt", persistentTargetTemperature);
+  jsonStringToPrint = addToJsonString(jsonStringToPrint, persistentTargetTemperatureString);
   
   for(int i = 0; i < oneWireMaxIndex; i++) {
     double temperature = readTemp(oneWireAddresses[i]);
@@ -220,7 +220,7 @@ void loop() {
 
   if (fanIsRunning) {
 
-    if (average > persistantTargetTemperature) {
+    if (average > persistentTargetTemperature) {
 
       if (mosfetOn_heater) {
         rampDownMosfet(MOSFET_HEAT);
@@ -231,7 +231,7 @@ void loop() {
         mosfetDutyCycleOnCount = 0;
       }
 
-    } else if (average <= persistantTargetTemperature) {
+    } else if (average <= persistentTargetTemperature) {
       if (!mosfetOn_heater) {
         rampUpMosfet(MOSFET_FAN_2);
         rampUpMosfet(MOSFET_HEAT);
@@ -271,7 +271,7 @@ void loop() {
   String mosfetStatusPair = getJsonPair("ht", mosfetOn_heater ? 1 : 0 );
   jsonStringToPrint = addToJsonString(jsonStringToPrint, mosfetStatusPair);
 
-  String fanPair = getJsonPair("fan", fanInteruptCount);
+  String fanPair = getJsonPair("fan", fanInterruptCount);
   jsonStringToPrint = addToJsonString(jsonStringToPrint, fanPair);
 
   checkFanStatus();
