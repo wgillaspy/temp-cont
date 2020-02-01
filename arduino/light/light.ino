@@ -16,7 +16,7 @@
 #define STATUS_LED_2 15  // BLUE LED
 #define STATUS_LED_3 13  // BLUE LED
 
-#define MOSFET_HEAT 5
+#define MOSFET_LIGHT 5
 #define MOSFET_FAN_1 6
 #define MOSFET_FAN_2 9
 
@@ -77,18 +77,6 @@ void readJsonAndDoAction(String inputJson) {
       Serial.println(error.c_str());
       return;
     }
-    
-    String action = doc["a"];
-    if (action.equals("tgt")) {
-      int newTargetTemperature = doc["tgt"];
-      setAndReadTargetTemperature(newTargetTemperature, true);
-    }
-    if (action.equals("tgt_tmp")) {
-      int newTargetTemperature = doc["tgt"];
-      if (newTargetTemperature < MAX_TARGET_TEMP) {
-         persistantTargetTemperature = newTargetTemperature;  
-      }
-    }
 }
 
 void setAndReadTargetTemperature(int temperature, boolean overwrite) {
@@ -111,24 +99,6 @@ void setup() {
 
   Serial.begin(9600);
 
-  setAndReadTargetTemperature(TARGET_TEMP, false);
-
-  int storedTargetTemperature = EEPROM.read(TARGET_TEMP_EEPROM_ADDRESS);
-  if (storedTargetTemperature == 255) {// The EEPROM hasn't been set.
-     EEPROM.write(TARGET_TEMP_EEPROM_ADDRESS, TARGET_TEMP);
-  } else {
-    if (storedTargetTemperature < 120) { //   Nothing I do needs to be above this temperature.
-      persistantTargetTemperature = storedTargetTemperature;
-    }
-  }
-  
-  discoverOneWireDevices();
-  sensors.begin();
-
-    for( int i = 0; i < oneWireMaxIndex; i++) {
-      sensors.setResolution(oneWireAddresses[i], 8);
-    }
-
     pinMode(STATUS_LED_1, OUTPUT);
     pinMode(STATUS_LED_2, OUTPUT);
     pinMode(STATUS_LED_3, OUTPUT);
@@ -137,36 +107,8 @@ void setup() {
     digitalWrite(STATUS_LED_2, LOW);
     digitalWrite(STATUS_LED_3, LOW);
 
-    // The heater mosfet must be written low on startup.
-    // Otherwise a power failure while it's above temperature will leave
-    // heater element on and overheat the device.
-    pinMode(MOSFET_HEAT, OUTPUT);
-    analogWrite(MOSFET_HEAT, 0);
-
-
-    // The fan mosfet should be written high on startup.
-    pinMode(MOSFET_FAN_1, OUTPUT);
-    analogWrite(MOSFET_FAN_1, 255);
-
-    pinMode(MOSFET_FAN_2, OUTPUT);
-    analogWrite(MOSFET_FAN_2, 255);
-
-    pinMode(INTERRUPT_PIN_FAN_1, INPUT);
-    digitalWrite(INTERRUPT_PIN_FAN_1, HIGH);
-
-    attachInterrupt(digitalPinToInterrupt(INTERRUPT_PIN_FAN_1), readRpm, RISING);
-
-    blinkLED(STATUS_LED_1);
-    blinkLED(STATUS_LED_2);
-    blinkLED(STATUS_LED_3);
-
-    delay(500); // Let the fan spin up.
-    checkFanStatus(); // Preload the fan status so that it doesn't show an error on startup.
-    
-    blinkLED(STATUS_LED_1);
-    blinkLED(STATUS_LED_2);
-    blinkLED(STATUS_LED_3);
-    
+    pinMode(MOSFET_LIGHT, OUTPUT);
+    analogWrite(MOSFET_LIGHT, 255);
 }
 
 String addToJsonString(String json, String add_json) {
@@ -192,96 +134,16 @@ void checkFanStatus() {
 }
 
 void loop() {
+
   if (Serial.available() > 0) {
     // read the incoming byte:
     String incomingJson = Serial.readString();
     readJsonAndDoAction(incomingJson);
   }
-
-  sensors.requestTemperatures();
-  double combinedTemperatures = 0.0;
-
-  String jsonStringToPrint = "";
-  String persistantTargetTemperatureString = getJsonPair("tgt", persistantTargetTemperature);
-  jsonStringToPrint = addToJsonString(jsonStringToPrint, persistantTargetTemperatureString);
-  
-  for(int i = 0; i < oneWireMaxIndex; i++) {
-    double temperature = readTemp(oneWireAddresses[i]);
-    combinedTemperatures += temperature;
-
-    String name = "t" + String(i);
-    String probeTempString = getJsonPair(name, temperature);
-    jsonStringToPrint = addToJsonString(jsonStringToPrint, probeTempString);
-  }
-
-  double average = combinedTemperatures / oneWireMaxIndex;
-  String probeAverageString = getJsonPair("avg", average);
-  jsonStringToPrint = addToJsonString(jsonStringToPrint, probeAverageString);
-
-  if (fanIsRunning) {
-
-    if (average > persistantTargetTemperature) {
-
-      if (mosfetOn_heater) {
-        rampDownMosfet(MOSFET_HEAT);
-        rampDownMosfet(MOSFET_FAN_2);
-        digitalWrite(STATUS_LED_3, LOW);
-        mosfetOn_heater = false;
-        mosfetDutyCycleOnCount = 0;
-        mosfetDutyCycleOnCount = 0;
-      }
-
-    } else if (average <= persistantTargetTemperature) {
-      if (!mosfetOn_heater) {
-        rampUpMosfet(MOSFET_FAN_1);
-        rampUpMosfet(MOSFET_HEAT);
-        digitalWrite(STATUS_LED_3, HIGH);
-        mosfetOn_heater = true;
-      } 
-      if (mosfetOn_heater) {
-      
-          if (mosfetDutyCycleOnCount < DUTY_CYCLE_ON) {
-              mosfetDutyCycleOnCount += 1; 
-          } else {
-              rampDownMosfet(MOSFET_HEAT);
-          }
-         
-         if (mosfetDutyCycleOnCount >= DUTY_CYCLE_ON) {
-          if (mosfetDutyCycleOffCount < DUTY_CYCLE_OFF) {
-             mosfetDutyCycleOffCount += 1;
-          } else {
-             rampUpMosfet(MOSFET_HEAT);
-             mosfetDutyCycleOnCount = 0;
-             mosfetDutyCycleOffCount = 0;
-          }
-         }
-      }
-    }
-  } else {
-    //Serial.println("Status: Fan is not running. Forcing heat off.");
-    String errorPair = getJsonPair("err","fan");
-    jsonStringToPrint = addToJsonString(jsonStringToPrint, errorPair);
-    analogWrite(MOSFET_HEAT, 0);
-    mosfetOn_heater = false;
-    blinkLED(STATUS_LED_3);
-    blinkLED(STATUS_LED_3);
-    blinkLED(STATUS_LED_3);
-  }
-
-  String mosfetStatusPair = getJsonPair("ht", mosfetOn_heater ? 1 : 0 );
-  jsonStringToPrint = addToJsonString(jsonStringToPrint, mosfetStatusPair);
-
-  String fanPair = getJsonPair("fan", fanInteruptCount);
-  jsonStringToPrint = addToJsonString(jsonStringToPrint, fanPair);
-
-  checkFanStatus();
-
-  // Indicate a loop with a blink.
-  blinkLED(STATUS_LED_1);
-
-  Serial.println(jsonStringToPrint);
-
   delay(800);
+  digitalWrite(STATUS_LED_1, LOW);
+  delay(800);
+  digitalWrite(STATUS_LED_1, HIGH);
 }
 
 void rampUpMosfet(int MOSFET_PIN) {
