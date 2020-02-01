@@ -4,7 +4,7 @@ const moment = require('moment');
 const axios = require("axios");
 
 
-const port = new SerialPort('/dev/ttyUSB0', {
+const port = new SerialPort('/dev/tempController', {
     baudRate: 9600
 });
 

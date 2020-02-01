@@ -1,0 +1,14 @@
+{
+  "Image" : "avrdude-controller:latest",
+  "Name" : "/avrdude-light",
+  "Hostname" : "avrdude-light",
+  "HostConfig" : {
+    "Devices": [
+      {
+        "PathOnHost": "/dev/lightController",
+        "PathInContainer": "/dev/lightController",
+        "CgroupPermissions": "rwm"
+      }
+    ]
+  }
+}
