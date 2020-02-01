@@ -1,5 +1,5 @@
 {
-  "Image" : "avrdude-controller:latest",
+  "Image" : "avrdude-light:latest",
   "Name" : "/avrdude-light",
   "Hostname" : "avrdude-light",
   "HostConfig" : {
