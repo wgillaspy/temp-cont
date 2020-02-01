@@ -233,7 +233,7 @@ void loop() {
 
     } else if (average <= persistantTargetTemperature) {
       if (!mosfetOn_heater) {
-        rampUpMosfet(MOSFET_FAN_2);
+        rampUpMosfet(MOSFET_FAN_1);
         rampUpMosfet(MOSFET_HEAT);
         digitalWrite(STATUS_LED_3, HIGH);
         mosfetOn_heater = true;

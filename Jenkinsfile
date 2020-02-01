@@ -13,7 +13,8 @@ pipeline {
         IMAGE_TAG = "latest"
         CONTAINER_NAME = "controller" // The name of of the nodjs application that will read data coming of the controller board.
         APP_INO = "controller.ino"  // The name of the arduino file that will be compiled and written to the atmega.
-        INO_CHANGED = "no"
+        INO_TEMP_CHANGED = "no"
+        INO_LIGHT_CHANGED = "no"
         NODEJS_CONTROLLER_CHANGED = "no"
         NODEJS_NOTIFIER_CHANGED = "no"
     }
@@ -51,8 +52,11 @@ pipeline {
 
                     for (fileName in changedFiles) {
                         println(fileName)
-                        if (fileName.contains("arduino")) {
-                            INO_CHANGED = "yes"
+                        if (fileName.contains("arduino") && fileName.contains("controller")) {
+                            INO_TEMP_CHANGED = "yes"
+                        }
+                        if (fileName.contains("arduino") && fileName.contains("light")) {
+                            INO_LIGHT_CHANGED = "yes"
                         }
                         if (fileName.contains("nodejs") && fileName.contains("controller")) {
                             NODEJS_CONTROLLER_CHANGED = "yes"
@@ -68,7 +72,7 @@ pipeline {
         stage("Compile and deploy sketch") {
             when {
                 expression {
-                    INO_CHANGED == "yes"
+                    INO_TEMP_CHANGED == "yes"
                 }
             }
             steps {
@@ -91,8 +95,6 @@ pipeline {
                         curl -X POST  -H 'Content-Type: application/json' --data-binary '@deploy-container.json' http://${IOT_IP_AND_DOCKER_PORT}/containers/create?name=avrdude-controller
                         curl -X POST  -H 'Content-Type: application/json' http://${IOT_IP_AND_DOCKER_PORT}/containers/avrdude-controller/start
                     """
-                    // Replace this with a wait for that queries the docker rest API.
-                    sleep(30)
 
                     waitUntil {
                         script {
@@ -118,6 +120,58 @@ pipeline {
                 }
             }
         }
+
+//        stage("Compile and deploy light sketch") {
+//            when {
+//                expression {
+//                    INO_LIGHT_CHANGED == "yes"
+//                }
+//            }
+//            steps {
+//                script {
+//
+//                    // Stop the container that is attached to the serial port.
+//                    sh "curl -X POST  -H 'Content-Type: application/json' http://${IOT_IP_AND_DOCKER_PORT}/containers/${CONTAINER_NAME}/stop"
+//                    sleep(10)
+//
+//                    sh """
+//                        cd ./arduino/light
+//
+//                        cat ${APP_INO} | mo > ${APP_INO}.tmp
+//                        mv -f ${APP_INO}.tmp ${APP_INO}
+//
+//                        tar -cvf light.tar ./light.ino ./Dockerfile
+//
+//                        curl -X DELETE http://${IOT_IP_AND_DOCKER_PORT}/containers/avrdude-controller?v=latest
+//                        curl -X POST -H  "X-Registry-Auth: ${GITDOCKERCREDENTAILS}" -H 'Content-Type: application/x-tar' --data-binary '@light.tar' http://${IOT_IP_AND_DOCKER_PORT}/build?t=avrdude-controller:latest
+//                        curl -X POST  -H 'Content-Type: application/json' --data-binary '@deploy-container.json' http://${IOT_IP_AND_DOCKER_PORT}/containers/create?name=avrdude-light
+//                        curl -X POST  -H 'Content-Type: application/json' http://${IOT_IP_AND_DOCKER_PORT}/containers/avrdude-light/start
+//                    """
+//
+//                    waitUntil {
+//                        script {
+//
+//                            CONTANER_STATUS = sh (
+//                                    script: "curl -X GET  -H 'Content-Type: application/json' http://${IOT_IP_AND_DOCKER_PORT}/containers/avrdude-controller/json",
+//                                    returnStdout: true
+//                            ).trim()
+//
+//                            def containerStatusJson = readJSON text: "${CONTANER_STATUS}"
+//                            println containerStatusJson.State.Status
+//                            if (containerStatusJson.State.Status == "exited") {
+//                                return true
+//                            } else {
+//                                return false;
+//                            }
+//                        }
+//                    }
+//
+//
+//                    sh "curl -X POST  -H 'Content-Type: application/json' http://${IOT_IP_AND_DOCKER_PORT}/containers/${CONTAINER_NAME}/start"
+//                    sleep(10)
+//                }
+//            }
+//        }
 
 
         stage('Deploy the nodejs controller application') {

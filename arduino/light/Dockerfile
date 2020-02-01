@@ -4,6 +4,6 @@ ENV TZ America/New_York
 
 WORKDIR /usr/app
 
-COPY controller.ino /usr/app/controller.ino
+COPY light.ino /usr/app/light.ino
 
-CMD ["bash", "/arduino-builder.sh","controller.ino", "/dev/tempController"]
+CMD ["bash", "/arduino-builder.sh","light.ino", "/dev/lightController"]
