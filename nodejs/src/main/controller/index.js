@@ -76,17 +76,27 @@ const lightControllerParser = lightControllerPort.pipe(new Readline({delimiter: 
 const temperatureControllerParser = temperatureControllerPort.pipe(new Readline({delimiter: '\r\n'}));
 
 lightControllerParser.on('data', function (data) {
+    try {
         const json = JSON.parse(data);
         writeSplunkData(json);
         checkAndWriteData("Light", lightControllerPort, newLight, json, lightMap);
+    } catch (parseException) {
+        console.log("Json Parse Error:");
+        console.log(parseException);
+    }
 });
 
 
 temperatureControllerParser.on('data', function (data) {
-    const json = JSON.parse(data);
-    //console.log(json);
-    writeSplunkData(json);
-    checkAndWriteData("Temperature", temperatureControllerPort, newTemp, json, temperatureMap);
+    try {
+        const json = JSON.parse(data);
+        //console.log(json);
+        writeSplunkData(json);
+        checkAndWriteData("Temperature", temperatureControllerPort, newTemp, json, temperatureMap);
+    } catch (parseException) {
+        console.log("Json Parse Error:");
+        console.log(parseException);
+    }
 });
 
 checkAndWriteData = (label, port, writejson, json, map) => {
