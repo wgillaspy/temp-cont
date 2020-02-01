@@ -1,15 +1,20 @@
 // 2
 const SerialPort = require('serialport');
-const Readline = require('@serialport/parser-readline');
+const Readline = require('@serialport/temperatureControllerParser-readline');
 const moment = require('moment');
 const axios = require("axios");
 
 
-const port = new SerialPort('/dev/tempController', {
+const lightControllerPort = new SerialPort('/dev/lightController', {
+    baudRate: 9600
+});
+
+const temperatureControllerPort = new SerialPort('/dev/tempController', {
     baudRate: 9600
 });
 
 const newTemp = {"a": "tgt_tmp", "tgt": 85};
+const newLight = {"a": "tgt_light", "tgt": 0};
 
 const temperatureMap = {
     0: 83,
@@ -38,36 +43,61 @@ const temperatureMap = {
     23: 83
 };
 
+const lightMap = {
+    0: 0,
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 60,
+    6: 70,
+    7: 120,
+    8: 160,
+    9: 220,
+    10: 220,
+    11: 255,
+    12: 255,
+    13: 255,
+    14: 255,
+    15: 255,
+    16: 220,
+    17: 160,
+    18: 120,
+    19: 60,
+    20: 0,
+    21: 0,
+    22: 0,
+    23: 0
+};
 
-const parser = port.pipe(new Readline({delimiter: '\r\n'}));
 
-parser.on('data', function (data) {
+const lightControllerParser = lightControllerPort.pipe(new Readline({delimiter: '\r\n'}));
 
+const temperatureControllerParser = temperatureControllerPort.pipe(new Readline({delimiter: '\r\n'}));
+
+lightControllerParser.on('data', function (data) {
+        const json = JSON.parse(data);
+        writeSplunkData(json);
+        checkAndWriteData("Light", lightControllerPort, newLight, json, lightMap);
+});
+
+
+temperatureControllerParser.on('data', function (data) {
+    const json = JSON.parse(data);
+    //console.log(json);
+    writeSplunkData(json);
+    checkAndWriteData("Temperature", temperatureControllerPort, newTemp, json, temperatureMap);
+});
+
+checkAndWriteData = (label, port, writejson, json, map) => {
     try {
         const hour = moment().format("H");
-        const json = JSON.parse(data);
-        //console.log(json);
 
-        const eventObject = {"event" : json};
+        if (json.tgt != map[hour]) {
 
-        const axiosConfig = {
-            headers: {
-                "Authorization" : "Splunk " + process.env.SPLUNK_TOKEN
-            }
-        };
-
-        axios.post(process.env.SPLUNK_URL, eventObject, axiosConfig).then(response => {
-
-        }).catch(error => {
-
-        });
-
-        if (json.tgt != temperatureMap[hour]) {
-            console.log("Hour: " + hour + ", " + json.tgt + " != " + temperatureMap[hour]);
-
-
-            newTemp.tgt = temperatureMap[hour];
-            port.write(JSON.stringify(newTemp), function (error) {
+            console.log("[" + label + "] Hour: " + hour + ", " + json.tgt + " != " + map[hour]);
+            writejson.tgt = map[hour];
+            port.write(JSON.stringify(writejson), function (error) {
                 if (error) {
                     console.log(error);
                 }
@@ -75,10 +105,28 @@ parser.on('data', function (data) {
         }
 
     } catch (err) {
-        console.log("Error:");
+        console.log(label + "Error:");
         console.log(err)
     }
+};
 
-});
+writeSplunkData = (json) => {
+    try {
+        const eventObject = {"event": json};
 
+        const axiosConfig = {
+            headers: {
+                "Authorization": "Splunk " + process.env.SPLUNK_TOKEN
+            }
+        };
+
+        axios.post(process.env.SPLUNK_URL, eventObject, axiosConfig).then(response => {
+        }).catch(error => {
+        });
+
+    } catch (splunkWriteDataError) {
+        console.log("splunkWriteDataError:");
+        console.log(splunkWriteDataError)
+    }
+};
 
