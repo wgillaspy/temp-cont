@@ -53,7 +53,7 @@ void loop() {
   analogWrite(MOSFET_LIGHT, persistentLightTargetTemperature);
 
   String jsonStringToPrint = "";
-  String persistentTargetTemperatureString = getJsonPair("tgt", persistentLightTargetTemperature);
+  String persistentTargetTemperatureString = getJsonPair("lht", persistentLightTargetTemperature);
   jsonStringToPrint = addToJsonString(jsonStringToPrint, persistentTargetTemperatureString);
 
   blinkLED(STATUS_LED_1);

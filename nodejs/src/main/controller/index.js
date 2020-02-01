@@ -79,7 +79,7 @@ lightControllerParser.on('data', function (data) {
     try {
         const json = JSON.parse(data);
         writeSplunkData(json);
-        checkAndWriteData("Light", lightControllerPort, newLight, json, lightMap);
+        checkAndWriteData("Light", "lht", lightControllerPort, newLight, json, lightMap);
     } catch (parseException) {
         console.log("Json Parse Error:");
         console.log(parseException);
@@ -92,20 +92,20 @@ temperatureControllerParser.on('data', function (data) {
         const json = JSON.parse(data);
         //console.log(json);
         writeSplunkData(json);
-        checkAndWriteData("Temperature", temperatureControllerPort, newTemp, json, temperatureMap);
+        checkAndWriteData("Temperature", "tgt", temperatureControllerPort, newTemp, json, temperatureMap);
     } catch (parseException) {
         console.log("Json Parse Error:");
         console.log(parseException);
     }
 });
 
-checkAndWriteData = (label, port, writejson, json, map) => {
+checkAndWriteData = (label, objectName, port, writejson, json, map) => {
     try {
         const hour = moment().format("H");
 
-        if (json.tgt != map[hour]) {
+        if (json[objectName] != map[hour]) {
 
-            console.log("[" + label + "] Hour: " + hour + ", " + json.tgt + " != " + map[hour]);
+            console.log("[" + label + "] Hour: " + hour + ", " + json[objectName] + " != " + map[hour]);
             writejson.tgt = map[hour];
             port.write(JSON.stringify(writejson), function (error) {
                 if (error) {
