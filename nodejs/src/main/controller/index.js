@@ -121,6 +121,9 @@ checkAndWriteData = (label, objectName, port, writejson, json, map) => {
 };
 
 writeSplunkData = (json) => {
+
+    console.log(json);
+
     try {
         const eventObject = {"event": json};
 
