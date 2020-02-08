@@ -1,4 +1,4 @@
-// 2
+// 3
 const SerialPort = require('serialport');
 const Readline = require('@serialport/parser-readline');
 const moment = require('moment');
