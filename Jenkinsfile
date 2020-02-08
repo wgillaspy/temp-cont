@@ -196,7 +196,7 @@ pipeline {
                             cat deploy-container.json | mo > deploy-container.json.tmp
                             mv deploy-container.json.tmp deploy-container.json
 
-                            curl -z node-v10.16.2-linux-armv7l.tar.xz https://nodejs.org/dist/v10.16.2/node-v10.16.2-linux-armv7l.tar.xz
+                            wget https://nodejs.org/dist/v10.16.2/node-v10.16.2-linux-armv7l.tar.xz
     
                             tar -cvf controller.tar package.json package-lock.json index.js node-v10.16.2-linux-armv7l.tar.xz ./Dockerfile
     
