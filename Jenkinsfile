@@ -225,7 +225,7 @@ pipeline {
                                      string(credentialsId: 'SPLUNK_API_HOST', variable: 'SPLUNK_API_HOST'),
                                      string(credentialsId: 'SPLUNK_API_PORT', variable: 'SPLUNK_API_PORT'),
                                      usernamePassword(credentialsId: 'SPLUNK_USER_AND_PASSWORD', usernameVariable: 'SPLUNK_USER', passwordVariable: 'SPLUNK_PASSWORD'),
-                                     dockerCert(credentialsId: 'DOCKER_AUTH_CERTS', variable: 'DOCKER_CERT_PATH')]) {
+                                     dockerCert(credentialsId: 'DOCKER_AUTH_CERTS', variable: 'LOCAL_DOCKER_CERT_PATH')]) {
 
                         // This one is a little different since it's going to the swarm cluster.
                         // We'll need to build it locally and then push it to the registry.
@@ -233,7 +233,7 @@ pipeline {
                         sh """
                             cd ./nodejs/src/main/notifier
 
-                            curl -X DELETE -H 'Content-Type: application/json' https://${SWARM_MANAGER_IP_AND_DOCKER_PORT}/services/notifier  --cert ${DOCKER_CERT_PATH}/cert.pem --key ${DOCKER_CERT_PATH}/key.pem  --cacert ${DOCKER_CERT_PATH}/ca.pem
+                            curl -X DELETE -H 'Content-Type: application/json' https://${SWARM_MANAGER_IP_AND_DOCKER_PORT}/services/notifier  --cert ${LOCAL_DOCKER_CERT_PATH}/cert.pem --key ${LOCAL_DOCKER_CERT_PATH}/key.pem  --cacert ${LOCAL_DOCKER_CERT_PATH}/ca.pem
 
                             docker run -v "\$PWD":/usr/src/app -w /usr/src/app arm64v8/node:alpine npm --verbose install
                             docker build . -t ${REGISTRY_IP_AND_PORT}/notifier:latest 
@@ -242,7 +242,7 @@ pipeline {
                             cat deploy-swarm.json | mo > deploy-swarm.json.tmp
                             mv deploy-swarm.json.tmp deploy-swarm.json
 
-                            curl -X POST -H 'Content-Type: application/json' --data-binary '@deploy-swarm.json' https://${SWARM_MANAGER_IP_AND_DOCKER_PORT}/services/create  --cert ${DOCKER_CERT_PATH}/cert.pem --key ${DOCKER_CERT_PATH}/key.pem  --cacert ${DOCKER_CERT_PATH}/ca.pem
+                            curl -X POST -H 'Content-Type: application/json' --data-binary '@deploy-swarm.json' https://${SWARM_MANAGER_IP_AND_DOCKER_PORT}/services/create  --cert ${LOCAL_DOCKER_CERT_PATH}/cert.pem --key ${LOCAL_DOCKER_CERT_PATH}/key.pem  --cacert ${LOCAL_DOCKER_CERT_PATH}/ca.pem
                         """
                     }
                 }
