@@ -224,7 +224,7 @@ void loop() {
 
       if (mosfetOn_heater) {
         rampDownMosfet(MOSFET_HEAT);
-        rampDownMosfet(MOSFET_FAN_2);
+        rampDownMosfet(MOSFET_FAN_2, 150);
         digitalWrite(STATUS_LED_3, LOW);
         mosfetOn_heater = false;
         mosfetDutyCycleOnCount = 0;
@@ -298,6 +298,14 @@ void rampDownMosfet(int MOSFET_PIN) {
 //    delay(10);
 //  }
   analogWrite(MOSFET_PIN, 0);
+}
+
+void rampDownMosfet(int MOSFET_PIN, int value) {
+//  for (int i = 255; i >= 0; i -= 5) {
+//    analogWrite(MOSFET_PIN, i);
+//    delay(10);
+//  }
+  analogWrite(MOSFET_PIN, value);
 }
 
 void discoverOneWireDevices(void) {
