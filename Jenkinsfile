@@ -210,7 +210,7 @@ pipeline {
                             cat Dockerfile | mo > Dockerfile.tmp
                             mv Dockerfile.tmp Dockerfile
 
-                            tar -cvf controller.tar package.json package-lock.json index.js ${NODEJS_DOWNLOAD_FILENAME} ./Dockerfile
+                            tar -cvf controller.tar package.json package-lock.json index.js ./${NODEJS_DOWNLOAD_FILENAME} ./Dockerfile
     
                             curl -X POST -H  "X-Registry-Auth: ${GITDOCKERCREDENTAILS}" -H 'Content-Type: application/x-tar' --data-binary '@controller.tar' http://${IOT_IP_AND_DOCKER_PORT}/build?t=controller:latest
                             curl -X POST  -H 'Content-Type: application/json' --data-binary '@deploy-container.json' http://${IOT_IP_AND_DOCKER_PORT}/containers/create?name=${CONTAINER_NAME}
