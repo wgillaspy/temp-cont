@@ -8,11 +8,11 @@ WORKDIR /usr/src/app
 RUN apt-get update
 RUN apt-get install -y python make g++
 
-COPY node-v10.16.2-linux-armv7l.tar.xz ./node-v10.16.2-linux-armv7l.tar.xz
-RUN tar xvf node-v10.16.2-linux-armv7l.tar.xz
-RUN rm -f node-v10.16.2-linux-armv7l.tar.xz
+COPY {{NODEJS_DOWNLOAD_FILENAME}} ./{{NODEJS_DOWNLOAD_FILENAME}}
+RUN tar xvf {{NODEJS_DOWNLOAD_FILENAME}}
+RUN rm -f {{NODEJS_DOWNLOAD_FILENAME}}
 
-ENV PATH /usr/src/app/node-v10.16.2-linux-armv7l/bin/:$PATH
+ENV PATH /usr/src/app/{{NODEJS_DOWNLOAD_DIRECTORY}}/bin/:$PATH
 
 COPY package*.json ./
 COPY index.js ./

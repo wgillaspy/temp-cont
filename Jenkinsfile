@@ -17,6 +17,9 @@ pipeline {
         INO_LIGHT_CHANGED = "no"
         NODEJS_CONTROLLER_CHANGED = "no"
         NODEJS_NOTIFIER_CHANGED = "no"
+        NODEJS_DOWNLOAD = "https://nodejs.org/dist/v13.12.0/node-v13.12.0-linux-armv7l.tar.xz"
+        NODEJS_DOWNLOAD_FILENAME = "node-v13.12.0-linux-armv7l.tar.xz"
+        NODEJS_DOWNLOAD_DIRECTORY = "node-v13.12.0-linux-armv7l"
     }
 
     stages {
@@ -186,6 +189,11 @@ pipeline {
                     withCredentials([string(credentialsId: 'SPLUNK_URL', variable: 'SPLUNK_URL'),
                                      string(credentialsId: 'SPLUNK_TOKEN', variable: 'SPLUNK_TOKEN')]) {
 
+                        if (fileExists(NODEJS_DOWNLOAD_FILENAME)) {
+                            println "Node js already downloaded."
+                        } else {
+                            sh "wget ${NODEJS_DOWNLOAD}"
+                        }
 
                         sh """
                             curl -X POST  -H 'Content-Type: application/json' http://${IOT_IP_AND_DOCKER_PORT}/containers/${CONTAINER_NAME}/stop
@@ -196,9 +204,10 @@ pipeline {
                             cat deploy-container.json | mo > deploy-container.json.tmp
                             mv deploy-container.json.tmp deploy-container.json
 
-                            wget https://nodejs.org/dist/v10.16.2/node-v10.16.2-linux-armv7l.tar.xz
-    
-                            tar -cvf controller.tar package.json package-lock.json index.js node-v10.16.2-linux-armv7l.tar.xz ./Dockerfile
+                            cat Dockerfile | mo > Dockerfile.tmp
+                            mv Dockerfile.tmp Dockerfile
+
+                            tar -cvf controller.tar package.json package-lock.json index.js ${NODEJS_DOWNLOAD_FILENAME} ./Dockerfile
     
                             curl -X POST -H  "X-Registry-Auth: ${GITDOCKERCREDENTAILS}" -H 'Content-Type: application/x-tar' --data-binary '@controller.tar' http://${IOT_IP_AND_DOCKER_PORT}/build?t=controller:latest
                             curl -X POST  -H 'Content-Type: application/json' --data-binary '@deploy-container.json' http://${IOT_IP_AND_DOCKER_PORT}/containers/create?name=${CONTAINER_NAME}
