@@ -196,6 +196,9 @@ pipeline {
                         }
 
                         sh """
+
+                            ls -ltra
+
                             curl -X POST  -H 'Content-Type: application/json' http://${IOT_IP_AND_DOCKER_PORT}/containers/${CONTAINER_NAME}/stop
                             curl -X DELETE http://${IOT_IP_AND_DOCKER_PORT}/containers/${CONTAINER_NAME}?v=${IMAGE_TAG}
     
