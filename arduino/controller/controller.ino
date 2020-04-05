@@ -218,13 +218,14 @@ void loop() {
   String probeAverageString = getJsonPair("avg", average);
   jsonStringToPrint = addToJsonString(jsonStringToPrint, probeAverageString);
 
-  if (fanIsRunning) {
+//  if (fanIsRunning) {
 
     if (average > persistentTargetTemperature) {
 
       if (mosfetOn_heater) {
         rampDownMosfet(MOSFET_HEAT);
-        rampDownMosfet(MOSFET_FAN_2, 150);
+        rampDownMosfet(MOSFET_FAN_1, 0);
+        rampDownMosfet(MOSFET_FAN_2, 0);
         digitalWrite(STATUS_LED_3, LOW);
         mosfetOn_heater = false;
         mosfetDutyCycleOnCount = 0;
@@ -233,6 +234,7 @@ void loop() {
 
     } else if (average <= persistentTargetTemperature) {
       if (!mosfetOn_heater) {
+        rampUpMosfet(MOSFET_FAN_1);
         rampUpMosfet(MOSFET_FAN_2);
         rampUpMosfet(MOSFET_HEAT);
         digitalWrite(STATUS_LED_3, HIGH);
@@ -257,16 +259,16 @@ void loop() {
          }
       }
     }
-  } else {
-    //Serial.println("Status: Fan is not running. Forcing heat off.");
-    String errorPair = getJsonPair("err","fan");
-    jsonStringToPrint = addToJsonString(jsonStringToPrint, errorPair);
-    analogWrite(MOSFET_HEAT, 0);
-    mosfetOn_heater = false;
-    blinkLED(STATUS_LED_3);
-    blinkLED(STATUS_LED_3);
-    blinkLED(STATUS_LED_3);
-  }
+//  } else {
+//    //Serial.println("Status: Fan is not running. Forcing heat off.");
+//    String errorPair = getJsonPair("err","fan");
+//    jsonStringToPrint = addToJsonString(jsonStringToPrint, errorPair);
+//    analogWrite(MOSFET_HEAT, 0);
+//    mosfetOn_heater = false;
+//    blinkLED(STATUS_LED_3);
+//    blinkLED(STATUS_LED_3);
+//    blinkLED(STATUS_LED_3);
+//  }
 
   String mosfetStatusPair = getJsonPair("ht", mosfetOn_heater ? 1 : 0 );
   jsonStringToPrint = addToJsonString(jsonStringToPrint, mosfetStatusPair);
