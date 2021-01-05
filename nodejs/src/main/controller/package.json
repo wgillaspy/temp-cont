@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/wgillaspy/temp-cont#readme",
   "dependencies": {
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "moment": "^2.24.0",
     "serialport": "^8.0.6"
   }
