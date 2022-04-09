@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/wgillaspy/temp-cont#readme",
   "dependencies": {
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "splunk-sdk": "^1.9.0",
     "twilio": "^3.39.2"
   }
